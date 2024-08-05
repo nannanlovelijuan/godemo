@@ -60,7 +60,7 @@ func NewApplication(name string, version string) *Application {
 
 	config, _ := etc.NewConfig(name)
 
-	quit := make(chan os.Signal, 1)
+	quit := make(chan os.Signal, 5)
 	signal.Notify(quit,
 		syscall.SIGINT,
 		syscall.SIGTERM,
@@ -79,17 +79,19 @@ func NewApplication(name string, version string) *Application {
 	return application
 }
 
-func (a *Application) Run(start func()) {
+func (a *Application) Run(start func(a *Application)) {
 	a.wait.Add(1)
 
 	go func() {
+		fmt.Println("Application start wait quit signal...")
 		<-a.quit
-		defer a.wait.Done()
+		a.wait.Done()
 	}()
-	start()
+	start(a)
 }
 
 func (a *Application) Wait() {
+	fmt.Println("Application wait ...")
 	a.wait.Wait()
 }
 

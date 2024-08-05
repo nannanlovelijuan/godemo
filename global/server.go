@@ -2,6 +2,7 @@ package global
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,23 +12,32 @@ import (
 // server 具有start 和 stop 方法
 // server 使用gin做为处理器
 type Server struct {
-	engine     *gin.Engine
-	server     *http.Server
-	pingrouter *api.PingRouter
+	engine  *gin.Engine
+	server  *http.Server
+	routers *api.Routers
 }
 
-func NewServer(engine *gin.Engine, pingRouter *api.PingRouter) *Server {
-	return &Server{engine: engine, server: NewHttpServer(8080), pingrouter: pingRouter}
+func NewServer(engine *gin.Engine, routers *api.Routers) *Server {
+	return &Server{engine: engine, server: NewHttpServer(8080), routers: routers}
 }
 
 func (s *Server) Start() {
 
-	s.pingrouter.Ping(s.engine)
+	//启动新线程启动服务
+	go func() {
+		//加载所有路由
+		api.RegisterRouters(s.engine, s.routers)
 
-	s.server.Handler = s.engine
-	s.server.ListenAndServe()
+		s.server.Handler = s.engine
+		if err := s.server.ListenAndServe(); err != nil {
+			fmt.Printf("server start error:%v\n", err)
+		}
+	}()
+
 }
 
 func (s *Server) Stop() {
-	s.server.Shutdown(context.Background())
+	if err := s.server.Shutdown(context.Background()); err != nil {
+		fmt.Printf("server shutdown error:%v\n", err)
+	}
 }

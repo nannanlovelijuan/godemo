@@ -13,6 +13,7 @@ import (
 
 // 开发过程 router->handler->service->repository
 var ProviderRoutersSet = wire.NewSet(
+	api.NewRouters,
 	api.NewPingRouter,
 )
 var ProviderHandlersSet = wire.NewSet(

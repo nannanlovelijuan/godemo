@@ -18,15 +18,15 @@ import (
 func InitServer() *global.Server {
 	engine := global.NewGinEngine()
 	pingHandler := handlers.NewPingHandler()
-	pingRouter := api.NewPingRouter(pingHandler)
-	server := global.NewServer(engine, pingRouter)
+	routers := api.NewRouters(pingHandler)
+	server := global.NewServer(engine, routers)
 	return server
 }
 
 // wire.go:
 
 // 开发过程 router->handler->service->repository
-var ProviderRoutersSet = wire.NewSet(api.NewPingRouter)
+var ProviderRoutersSet = wire.NewSet(api.NewRouters, api.NewPingRouter)
 
 var ProviderHandlersSet = wire.NewSet(handlers.NewPingHandler)
 
