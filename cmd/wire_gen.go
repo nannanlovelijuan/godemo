@@ -7,13 +7,29 @@
 package main
 
 import (
+	"github.com/google/wire"
 	"gitlab.ezrpro.in/godemo/global"
+	"gitlab.ezrpro.in/godemo/internal/api"
+	"gitlab.ezrpro.in/godemo/internal/api/handlers"
 )
 
 // Injectors from wire.go:
 
 func InitServer() *global.Server {
 	engine := global.NewGinEngine()
-	server := global.NewServer(engine)
+	pingHandler := handlers.NewPingHandler()
+	pingRouter := api.NewPingRouter(pingHandler)
+	server := global.NewServer(engine, pingRouter)
 	return server
 }
+
+// wire.go:
+
+// 开发过程 router->handler->service->repository
+var ProviderRoutersSet = wire.NewSet(api.NewPingRouter)
+
+var ProviderHandlersSet = wire.NewSet(handlers.NewPingHandler)
+
+var ProviderServicesSet = wire.NewSet()
+
+var ProviderReposSet = wire.NewSet()
