@@ -11,14 +11,20 @@ import (
 	"gitlab.ezrpro.in/godemo/global"
 	"gitlab.ezrpro.in/godemo/internal/api"
 	"gitlab.ezrpro.in/godemo/internal/api/handlers"
+	"gitlab.ezrpro.in/godemo/internal/repo"
+	"gitlab.ezrpro.in/godemo/internal/service"
 )
 
 // Injectors from wire.go:
 
 func InitServer() *global.Server {
 	engine := global.NewGinEngine()
-	pingHandler := handlers.NewPingHandler()
-	routers := api.NewRouters(pingHandler)
+	testHandler := handlers.NewTestHandler()
+	db := global.InitDB()
+	iProjectRepo := repo.NewMysqlProjectRepo(db)
+	iProjectService := service.NewProjectService(iProjectRepo)
+	projectHandler := handlers.NewProjectHandler(iProjectService)
+	routers := api.NewRouters(testHandler, projectHandler)
 	server := global.NewServer(engine, routers)
 	return server
 }
@@ -26,10 +32,10 @@ func InitServer() *global.Server {
 // wire.go:
 
 // 开发过程 router->handler->service->repository
-var ProviderRoutersSet = wire.NewSet(api.NewRouters, api.NewPingRouter)
+var ProviderRoutersSet = wire.NewSet(api.NewRouters, api.NewTestRouter, api.NewProjectRouter)
 
-var ProviderHandlersSet = wire.NewSet(handlers.NewPingHandler)
+var ProviderHandlersSet = wire.NewSet(handlers.NewTestHandler, handlers.NewProjectHandler)
 
-var ProviderServicesSet = wire.NewSet()
+var ProviderServicesSet = wire.NewSet(service.NewProjectService)
 
-var ProviderReposSet = wire.NewSet()
+var ProviderReposSet = wire.NewSet(repo.NewMysqlProjectRepo)

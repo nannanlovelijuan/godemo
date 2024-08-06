@@ -6,17 +6,22 @@ import (
 )
 
 type Routers struct {
-	PingRouter  *PingRouter
-	PingHandler *handlers.PingHandler
+	TestRouter     *TestRouter
+	TestHandler    *handlers.TestHandler
+	ProjectRouter  *ProjectRouter
+	ProjectHandler *handlers.ProjectHandler
 }
 
-func NewRouters(pingHandler *handlers.PingHandler) *Routers {
+func NewRouters(testHandler *handlers.TestHandler, projectHandler *handlers.ProjectHandler) *Routers {
 
-	pingRouter := NewPingRouter(pingHandler)
-
-	return &Routers{PingRouter: pingRouter}
+	testRouter := NewTestRouter(testHandler)
+	projectRouter := NewProjectRouter(projectHandler)
+	return &Routers{TestRouter: testRouter, ProjectRouter: projectRouter}
 }
 
 func RegisterRouters(engine *gin.Engine, routers *Routers) {
-	routers.PingRouter.Ping(engine)
+	routers.TestRouter.Ping(engine)
+	routers.TestRouter.Gracefully(engine)
+
+	routers.ProjectRouter.GetById(engine)
 }

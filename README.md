@@ -21,9 +21,9 @@
 |    |    |    |---pinghanler.go  
 |    |    |---routers.go  
 |    |    |---pingrouter.go  
-|    |---service
+|    |---services
 |    |    |---
-|    |---repo
+|    |---repos
 |    |    |---
 |    |---models
 
@@ -64,5 +64,18 @@ go run .\main.go .\wire_gen.go
 ```
 go install github.com/google/wire/cmd/wire@latest
 ```
-
+4. wire vscode告警
+```
+[{
+	"resource": "/d:/workspace/godemo/cmd/wire.go",
+	"owner": "_generated_diagnostic_collection_name_#0",
+	"severity": 4,
+	"message": "No packages found for open file D:\\workspace\\godemo\\cmd\\wire.go.\nThis file may be excluded due to its build tags; try adding \"-tags=<build tag>\" to your gopls \"buildFlags\" configuration\nSee the documentation for more information on working with build tags:\nhttps://github.com/golang/tools/blob/master/gopls/doc/settings.md#buildflags.",
+	"source": "go list",
+	"startLineNumber": 5,
+	"startColumn": 9,
+	"endLineNumber": 5,
+	"endColumn": 13
+}]
+```
 

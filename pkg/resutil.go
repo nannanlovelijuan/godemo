@@ -19,3 +19,14 @@ func Success(c *gin.Context, data interface{}) {
 		},
 	)
 }
+
+func Failure(c *gin.Context, code int, err error) {
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"code":    code,
+			"status":  false,
+			"message": err.Error(),
+		},
+	)
+}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"gitlab.ezrpro.in/godemo/internal/api"
@@ -29,14 +30,15 @@ func (s *Server) Start() {
 		api.RegisterRouters(s.engine, s.routers)
 
 		s.server.Handler = s.engine
-		if err := s.server.ListenAndServe(); err != nil {
+		if err := s.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			fmt.Printf("server start error:%v\n", err)
+			os.Exit(1)
 		}
 	}()
-
 }
 
 func (s *Server) Stop() {
+	fmt.Println("server shutdown...")
 	if err := s.server.Shutdown(context.Background()); err != nil {
 		fmt.Printf("server shutdown error:%v\n", err)
 	}
