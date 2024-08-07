@@ -28,9 +28,20 @@
 |    |---models
 
 ```
-## 启动流程
+## 启动过程
+1. 应用基本信息设置：应用名称，版本号，环境，主机IP，主机名称，工作目录，配置信息。   
+2. 初始化服务：初始化gin，初始化db，通过wire进行依赖注入，初始化所有路由。    
+3. 应用运行：启动服务，应用等待，停止服务。  
 
-## 开发步骤
+## 如何进行开发
+开发业务只对internal文件夹进行改动。  
+开发过程如下：  
+1. 新建XXRouter:属性是具体的XXHandler。功能只声明路由配置，调用方法
+2. 新建XXHandler:属性是具体的IXXService，是各个service的接口组合。功能完成业务组合。  
+3. service：属性是具体的IRepo。功能是完成单个业务的实现。不用关心是哪种数据库。
+4. repo：属性是db。功能是完成数据库操作。不同数据库类型的不同实现。  
+5. 在Routers中添加新开发的XXRouter。  
+6. 在wire.go中添加对应的NewXXRouter,NewXXHandler,NewXXService,NewXXRepo,执行wire.go生成wire_gen.go。  
 
 ## 依赖安装
 
