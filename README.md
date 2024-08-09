@@ -101,3 +101,14 @@ go install github.com/google/wire/cmd/wire@latest
 build_windows.go文件中（-lmsvcr120 -lssp是为了编译通过加的）。
 // #cgo LDFLAGS: ${SRCDIR}/librdkafka_vendor/librdkafka_windows.a  -lws2_32 -lsecur32 -lcrypt32 -lmsvcr120 -lssp
 ```
+6.使用IBM/sarama的问题
+```
+1、kafka: invalid configuration (Producer.Return.Successes must be true to be u
+2、client has run out of available brokers to talk to
+```
+解决方案：  
+```
+对于问题1设置 config设置config.Producer.Return.Successes = true  
+
+对于问题2设置config.Version = sarama.V0_11_0_2  
+```

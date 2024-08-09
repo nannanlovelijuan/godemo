@@ -33,7 +33,8 @@ var ProviderServicesSet = wire.NewSet(
 )
 var ProviderReposSet = wire.NewSet(
 	repo.NewMysqlProjectRepo,
-	repo.NewConfluentProducerRepo,
+	// repo.NewConfluentProducerRepo,
+	repo.NewSaramaKafkaProducer,
 )
 
 func InitServer(app *global.Application) *global.Server {
@@ -42,7 +43,8 @@ func InitServer(app *global.Application) *global.Server {
 		global.NewServer,
 		global.NewGinEngine,
 		//初始化confluent-kafka-go
-		global.InitConfluntKafkaProducer,
+		// global.InitConfluntKafkaProducer,
+		global.InitSaramaKafkaProducer,
 		global.InitDB,
 		ProviderRoutersSet,
 		ProviderHandlersSet,

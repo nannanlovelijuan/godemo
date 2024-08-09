@@ -20,6 +20,8 @@ func (p *confluentProducer) Send(topic, msg string) (partition int32, offset int
 
 	//优化成协程发送
 
+	fmt.Println("Send msg by Confluent...")
+
 	deliveryChan := make(chan kafka.Event)
 
 	err = p.producer.Produce(&kafka.Message{

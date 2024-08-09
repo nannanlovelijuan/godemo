@@ -24,8 +24,8 @@ func InitServer(app *global.Application) *global.Server {
 	iProjectRepo := repo.NewMysqlProjectRepo(db)
 	iProjectService := service.NewProjectService(iProjectRepo)
 	projectHandler := handlers.NewProjectHandler(iProjectService)
-	producer := global.InitConfluntKafkaProducer(app)
-	iProducerRepo := repo.NewConfluentProducerRepo(producer)
+	syncProducer := global.InitSaramaKafkaProducer(app)
+	iProducerRepo := repo.NewSaramaKafkaProducer(syncProducer)
 	iProducerService := service.NewProducerService(iProducerRepo)
 	producerHandler := handlers.NewProducerHandler(iProducerService)
 	routers := api.NewRouters(testHandler, projectHandler, producerHandler)
@@ -42,4 +42,4 @@ var ProviderHandlersSet = wire.NewSet(handlers.NewTestHandler, handlers.NewProje
 
 var ProviderServicesSet = wire.NewSet(service.NewProjectService, service.NewProducerService)
 
-var ProviderReposSet = wire.NewSet(repo.NewMysqlProjectRepo, repo.NewConfluentProducerRepo)
+var ProviderReposSet = wire.NewSet(repo.NewMysqlProjectRepo, repo.NewSaramaKafkaProducer)

@@ -3,6 +3,7 @@ package global
 import (
 	"fmt"
 
+	"github.com/IBM/sarama"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
 
@@ -26,6 +27,7 @@ func setKafkaProducerConfig(app *Application) *kafka.ConfigMap {
 	configMap := kafka.ConfigMap{
 		"bootstrap.servers": bootstrapServer,
 	}
+	// 0：不确认，1：learder确认，3：leleader和follower确认
 	if b, v := app.Config.GetKv("kafka.acks"); b {
 		configMap.SetKey("acks", v)
 	}
@@ -39,6 +41,28 @@ func setKafkaProducerConfig(app *Application) *kafka.ConfigMap {
 	}
 
 	return &configMap
+}
+
+func InitSaramaKafkaProducer(app *Application) *sarama.SyncProducer {
+
+	_, bootstrapServer := app.Config.GetKv("kafka.bootstrap_server")
+	brokerList := []string{bootstrapServer}
+
+	config := setSaramaKafkaProducerConfig(app)
+	producer, err := sarama.NewSyncProducer(brokerList, config)
+
+	if err != nil {
+		fmt.Printf("Failed to create InitSaramaKafkaProducer: %v\n", err)
+	}
+	return &producer
+}
+
+func setSaramaKafkaProducerConfig(_ *Application) *sarama.Config {
+
+	config := sarama.NewConfig()
+	config.Version = sarama.V0_11_0_2
+	config.Producer.Return.Successes = true
+	return config
 }
 
 //kafka消费者对象
