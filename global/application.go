@@ -13,6 +13,9 @@ import (
 	"gitlab.ezrpro.in/godemo/etc"
 )
 
+type Name string
+type Version string
+
 type Application struct {
 	Info   *ApplicationInfo
 	Config *etc.Config
@@ -50,15 +53,13 @@ func NewApplication(name string, version string) *Application {
 	rootDir := filepath.Dir(ex)
 
 	info := ApplicationInfo{
-		Name:     name,
-		Version:  version,
+		Name:     string(name),
+		Version:  string(version),
 		Env:      env,
 		Host:     host,
 		Hostname: hostName,
 		RootDir:  rootDir,
 	}
-
-	config, _ := etc.NewConfig(name)
 
 	quit := make(chan os.Signal, 5)
 	signal.Notify(quit,
@@ -68,6 +69,7 @@ func NewApplication(name string, version string) *Application {
 	)
 	wait := &sync.WaitGroup{}
 
+	config, err := etc.NewConfig(name)
 	application := &Application{
 		Info:   &info,
 		Config: config,

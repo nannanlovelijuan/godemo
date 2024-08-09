@@ -17,8 +17,8 @@ func NewConfig(appId string) (*Config, error) {
 	remote.SetAppID(appId)
 
 	conf := config.NewConfig()
-	conf.AddConfigPath(".")
-	conf.SetConfigName("config")
+	conf.AddConfigPath("../etc")
+	conf.SetConfigName("config.dev")
 	conf.SetConfigType("json")
 
 	err := conf.Parse()
@@ -27,7 +27,7 @@ func NewConfig(appId string) (*Config, error) {
 		return nil, err
 	}
 
-	serverUrl := conf.GetString("apollo.serverUrl")
+	serverUrl := conf.GetString("apollo.server")
 
 	err = conf.AddRemoteProvider("apollo", serverUrl, "application")
 	if err != nil {
@@ -41,4 +41,13 @@ func NewConfig(appId string) (*Config, error) {
 		conf:            conf,
 		apolloServerUrl: serverUrl,
 	}, nil
+}
+
+func (conf *Config) GetKv(key string) (b bool, v string) {
+
+	v = conf.conf.GetString(key)
+	if len(v) > 0 {
+		return true, v
+	}
+	return false, v
 }

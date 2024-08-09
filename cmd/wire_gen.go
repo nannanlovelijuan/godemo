@@ -17,14 +17,18 @@ import (
 
 // Injectors from wire.go:
 
-func InitServer() *global.Server {
+func InitServer(app *global.Application) *global.Server {
 	engine := global.NewGinEngine()
 	testHandler := handlers.NewTestHandler()
-	db := global.InitDB()
+	db := global.InitDB(app)
 	iProjectRepo := repo.NewMysqlProjectRepo(db)
 	iProjectService := service.NewProjectService(iProjectRepo)
 	projectHandler := handlers.NewProjectHandler(iProjectService)
-	routers := api.NewRouters(testHandler, projectHandler)
+	producer := global.InitConfluntKafkaProducer(app)
+	iProducerRepo := repo.NewConfluentProducerRepo(producer)
+	iProducerService := service.NewProducerService(iProducerRepo)
+	producerHandler := handlers.NewProducerHandler(iProducerService)
+	routers := api.NewRouters(testHandler, projectHandler, producerHandler)
 	server := global.NewServer(engine, routers)
 	return server
 }
@@ -32,10 +36,10 @@ func InitServer() *global.Server {
 // wire.go:
 
 // 开发过程 router->handler->service->repository
-var ProviderRoutersSet = wire.NewSet(api.NewRouters, api.NewTestRouter, api.NewProjectRouter)
+var ProviderRoutersSet = wire.NewSet(api.NewRouters, api.NewTestRouter, api.NewProjectRouter, api.NewProducerRouter)
 
-var ProviderHandlersSet = wire.NewSet(handlers.NewTestHandler, handlers.NewProjectHandler)
+var ProviderHandlersSet = wire.NewSet(handlers.NewTestHandler, handlers.NewProjectHandler, handlers.NewProducerHandler)
 
-var ProviderServicesSet = wire.NewSet(service.NewProjectService)
+var ProviderServicesSet = wire.NewSet(service.NewProjectService, service.NewProducerService)
 
-var ProviderReposSet = wire.NewSet(repo.NewMysqlProjectRepo)
+var ProviderReposSet = wire.NewSet(repo.NewMysqlProjectRepo, repo.NewConfluentProducerRepo)

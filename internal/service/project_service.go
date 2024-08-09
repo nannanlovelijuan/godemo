@@ -6,15 +6,15 @@ import (
 )
 
 type projectService struct {
-	mysqlProjectRepo repo.IProjectRepo
+	projectRepo repo.IProjectRepo
 }
 
-func NewProjectService(mysqlProjectRepo repo.IProjectRepo) IProjectService {
+func NewProjectService(projectRepo repo.IProjectRepo) IProjectService {
 	return &projectService{
-		mysqlProjectRepo: mysqlProjectRepo,
+		projectRepo: projectRepo,
 	}
 }
 
 func (p *projectService) GetById(id int) (model.Project, error) {
-	return p.mysqlProjectRepo.GetById(id)
+	return p.projectRepo.GetById(id)
 }

@@ -89,4 +89,15 @@ go install github.com/google/wire/cmd/wire@latest
 	"endColumn": 13
 }]
 ```
-
+5.使用confluent-kafka-go的win环境下编译错误  
+```
+1、gcc不支持  
+2、undefined reference to `__imp__wassert  
+```
+解决方案：  
+```
+对于问题1下载gcc环境  。
+对于问题2查看c:\Widows\System32\目录下的msvcrXX.dll文件，找到对应的版本，然后将对应的版本添加到C:\Users\EZR\go\pkg\mod\github.com\confluentinc\confluent-kafka-go\v2@v2.5.0\kafka目录下的
+build_windows.go文件中（-lmsvcr120 -lssp是为了编译通过加的）。
+// #cgo LDFLAGS: ${SRCDIR}/librdkafka_vendor/librdkafka_windows.a  -lws2_32 -lsecur32 -lcrypt32 -lmsvcr120 -lssp
+```

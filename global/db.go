@@ -1,14 +1,24 @@
 package global
 
 import (
+	"fmt"
 	"log"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-func InitDB() *gorm.DB {
-	dsn := "root:123456@tcp(192.168.12.118:3306)/ezp-bigdata?charset=utf8&parseTime=true"
+// type DB struct {
+// 	app *Application
+// }
+
+func InitDB(app *Application) *gorm.DB {
+
+	_, dsn := app.Config.GetKv("db.dsn")
+	fmt.Println(dsn)
+
+	//根据配置获取数据库地址
+	// dsn := "root:123456@tcp(192.168.12.118:3306)/ezp-bigdata?charset=utf8&parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)

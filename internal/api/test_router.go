@@ -6,21 +6,21 @@ import (
 )
 
 type TestRouter struct {
-	pingHandler *handlers.TestHandler
+	testHandler *handlers.TestHandler
 }
 
-func NewTestRouter(pingHandler *handlers.TestHandler) *TestRouter {
+func NewTestRouter(testHandler *handlers.TestHandler) *TestRouter {
 	return &TestRouter{
-		pingHandler: pingHandler,
+		testHandler: testHandler,
 	}
 }
 
 // 服务验证
 func (b *TestRouter) Ping(engine *gin.Engine) {
-	engine.GET("/test/ping", b.pingHandler.Ping)
+	engine.GET("/test/ping", b.testHandler.Ping)
 }
 
 // 优雅停机测试
 func (b *TestRouter) Gracefully(engine *gin.Engine) {
-	engine.GET("/test/gracefully", b.pingHandler.Gracefully)
+	engine.GET("/test/gracefully", b.testHandler.Gracefully)
 }

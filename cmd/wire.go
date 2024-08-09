@@ -18,23 +18,31 @@ var ProviderRoutersSet = wire.NewSet(
 	api.NewRouters,
 	api.NewTestRouter,
 	api.NewProjectRouter,
+
+	api.NewProducerRouter,
 )
 var ProviderHandlersSet = wire.NewSet(
 	handlers.NewTestHandler,
 	handlers.NewProjectHandler,
+
+	handlers.NewProducerHandler,
 )
 var ProviderServicesSet = wire.NewSet(
 	service.NewProjectService,
+	service.NewProducerService,
 )
 var ProviderReposSet = wire.NewSet(
 	repo.NewMysqlProjectRepo,
+	repo.NewConfluentProducerRepo,
 )
 
-func InitServer() *global.Server {
+func InitServer(app *global.Application) *global.Server {
 
 	wire.Build(
 		global.NewServer,
 		global.NewGinEngine,
+		//初始化confluent-kafka-go
+		global.InitConfluntKafkaProducer,
 		global.InitDB,
 		ProviderRoutersSet,
 		ProviderHandlersSet,

@@ -1,0 +1,1 @@
+{"application":{"db.dsn":"root:123456@tcp(192.168.12.118:3306)/ezp-fm?charset=utf8\u0026parseTime=true","kafka.bootstrap_server":"192.168.128.216:9092"}}
