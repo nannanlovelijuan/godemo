@@ -10,6 +10,11 @@ type saramaKafkaProducer struct {
 	producer *sarama.SyncProducer
 }
 
+// AsyncSend implements IProducerRepo.
+func (i *saramaKafkaProducer) AsyncSend(topic string, msg string) (partition int32, offset int64, err error) {
+	panic("unimplemented")
+}
+
 // Send implements IProducerRepo.
 func (i *saramaKafkaProducer) Send(topic string, msg string) (partition int32, offset int64, err error) {
 

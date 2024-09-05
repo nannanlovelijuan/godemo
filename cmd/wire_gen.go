@@ -28,7 +28,9 @@ func InitServer(app *global.Application) *global.Server {
 	iProducerRepo := repo.NewSaramaKafkaProducer(syncProducer)
 	iProducerService := service.NewProducerService(iProducerRepo)
 	producerHandler := handlers.NewProducerHandler(iProducerService)
-	routers := api.NewRouters(testHandler, projectHandler, producerHandler)
+	iKafkaService := service.NewKafkaService()
+	kafkaHandler := handlers.NewKafkaHandler(iKafkaService)
+	routers := api.NewRouters(testHandler, projectHandler, producerHandler, kafkaHandler)
 	server := global.NewServer(engine, routers)
 	return server
 }
@@ -36,10 +38,10 @@ func InitServer(app *global.Application) *global.Server {
 // wire.go:
 
 // 开发过程 router->handler->service->repository
-var ProviderRoutersSet = wire.NewSet(api.NewRouters, api.NewTestRouter, api.NewProjectRouter, api.NewProducerRouter)
+var ProviderRoutersSet = wire.NewSet(api.NewRouters, api.NewTestRouter, api.NewProjectRouter, api.NewProducerRouter, api.NewKafkaRouter)
 
-var ProviderHandlersSet = wire.NewSet(handlers.NewTestHandler, handlers.NewProjectHandler, handlers.NewProducerHandler)
+var ProviderHandlersSet = wire.NewSet(handlers.NewTestHandler, handlers.NewProjectHandler, handlers.NewProducerHandler, handlers.NewKafkaHandler)
 
-var ProviderServicesSet = wire.NewSet(service.NewProjectService, service.NewProducerService)
+var ProviderServicesSet = wire.NewSet(service.NewProjectService, service.NewProducerService, service.NewKafkaService)
 
 var ProviderReposSet = wire.NewSet(repo.NewMysqlProjectRepo, repo.NewSaramaKafkaProducer)

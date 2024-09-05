@@ -7,5 +7,9 @@ type IProjectRepo interface {
 }
 
 type IProducerRepo interface {
+	//同步发送
 	Send(topic, msg string) (partition int32, offset int64, err error)
+
+	//异步发送
+	AsyncSend(topic, msg string) (partition int32, offset int64, err error)
 }

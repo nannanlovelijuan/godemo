@@ -20,16 +20,19 @@ var ProviderRoutersSet = wire.NewSet(
 	api.NewProjectRouter,
 
 	api.NewProducerRouter,
+	api.NewKafkaRouter,
 )
 var ProviderHandlersSet = wire.NewSet(
 	handlers.NewTestHandler,
 	handlers.NewProjectHandler,
 
 	handlers.NewProducerHandler,
+	handlers.NewKafkaHandler,
 )
 var ProviderServicesSet = wire.NewSet(
 	service.NewProjectService,
 	service.NewProducerService,
+	service.NewKafkaService,
 )
 var ProviderReposSet = wire.NewSet(
 	repo.NewMysqlProjectRepo,

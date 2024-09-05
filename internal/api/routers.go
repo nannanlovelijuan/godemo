@@ -9,14 +9,16 @@ type Routers struct {
 	testRouter     *TestRouter
 	projectRouter  *ProjectRouter
 	producerRouter *producerRouter
+	kafkaRouter    *KafkaRouter
 }
 
-func NewRouters(testHandler *handlers.TestHandler, projectHandler *handlers.ProjectHandler, producerHandler *handlers.ProducerHandler) *Routers {
+func NewRouters(testHandler *handlers.TestHandler, projectHandler *handlers.ProjectHandler, producerHandler *handlers.ProducerHandler, kafkaHandler *handlers.KafkaHandler) *Routers {
 
 	testRouter := NewTestRouter(testHandler)
 	projectRouter := NewProjectRouter(projectHandler)
 	producerRouter := NewProducerRouter(producerHandler)
-	return &Routers{testRouter: testRouter, projectRouter: projectRouter, producerRouter: producerRouter}
+	kafkaRouter := NewKafkaRouter(kafkaHandler)
+	return &Routers{testRouter: testRouter, projectRouter: projectRouter, producerRouter: producerRouter, kafkaRouter: kafkaRouter}
 }
 
 func RegisterRouters(engine *gin.Engine, routers *Routers) {
@@ -26,4 +28,6 @@ func RegisterRouters(engine *gin.Engine, routers *Routers) {
 	routers.projectRouter.GetById(engine)
 
 	routers.producerRouter.SendTest(engine)
+
+	routers.kafkaRouter.Produce(engine)
 }
